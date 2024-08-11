@@ -1,0 +1,4 @@
+pygeoapi
+python-dotenv
+geoalchemy2
+psycopg2-binary
