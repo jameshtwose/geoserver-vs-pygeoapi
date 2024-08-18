@@ -12,6 +12,7 @@ Comparison of api vs tile server for rendering GIS data
 - `pg_restore -C -d postgres /var/lib/postgresql/data/nyc_data.backup;` to restore the database
 - `pg_restore -C -d postgres /home/nyc_data.backup -U postgres` to restore the database
 - `docker exec -it pgadmin_container sh` to access pgadmin
+- `streamlit run frontend/dashboard.py` to run the streamlit dashboard
 
 ## Pgadmin connection settings
 - host: docker.for.mac.host.internal

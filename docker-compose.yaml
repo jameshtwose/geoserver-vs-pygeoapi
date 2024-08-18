@@ -90,7 +90,15 @@ services:
   #   build: ./pygeoapi
   #   container_name: pygeoapi
   #   ports:
-  #     - "5000:5000"
+  #     - "5001:5000"
+  #   networks:
+  #     - database
+  
+  # frontend:
+  #   build: ./frontend
+  #   container_name: frontend
+  #   ports:
+  #     - "8081:8081"
   #   networks:
   #     - database
 
@@ -105,6 +113,10 @@ services:
 networks:
   database:
     driver: bridge
+  geoserver:
+    driver: bridge
+  # pygeoapi:
+  #   driver: bridge
 
 volumes:
   database:
