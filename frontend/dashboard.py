@@ -1,68 +1,94 @@
-import folium.raster_layers
 import streamlit as st
-from streamlit_folium import folium_static, st_folium
+from streamlit_folium import folium_static
 import folium
+from folium.plugins import Fullscreen
+from streamlit_js_eval import streamlit_js_eval
+
+# configure the page
+st.set_page_config(
+    page_title="Dashboard",
+    page_icon=":sparkles:",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
 
 st.title("Dashboard")
-
-m = folium.Map(
-    location=[51.922408, 4.4695292],
-    # location=[41, -70],
-    zoom_start=5,
-    #    tiles="cartodb positron"
-)
 
 host_root = "http://localhost"
 # host_root = "docker.for.mac.host.internal"
 
-# folium.WmsTileLayer(
-#     url="https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi",
-#     name="test",
-#     fmt="image/png",
-#     layers="nexrad-n0r-900913",
-#     attr="Weather data © 2012 IEM Nexrad",
-#     transparent=True,
-#     overlay=True,
-#     control=True,
-# ).add_to(m)
-# add localhost geoserver wms tile layer
-folium.raster_layers.WmsTileLayer(
-    # url="http://localhost:8080/geoserver/wms",
-    url=f"{host_root}:8080/geoserver/wms",
-    name="geoserver-test",
-    fmt="image/png",
-    layers=["ne:world", "ne:populated_places", "ne:disputed_areas"],
-    attr="ne-geoserver",
-    transparent=True,
-    overlay=True,
-    control=True,
-    show=True,
-).add_to(m)
-folium.raster_layers.WmsTileLayer(
-    # url="http://localhost:8080/geoserver/wms",
-    url=f"{host_root}:8080/geoserver/wms",
-    name="geoserver-test-tasmania",
-    fmt="image/png",
-    layers=["spearfish", "tasmania"],
-    attr="tas-geoserver",
-    transparent=True,
-    overlay=True,
-    control=True,
-    show=True,
-).add_to(m)
+screen_width = streamlit_js_eval(
+    js_expressions="window.screen.width", want_output=True, key="screen_width"
+)
+screen_height = streamlit_js_eval(
+    js_expressions="window.screen.height",
+    want_output=True,
+    key="screen_height",
+)
 
-# folium.raster_layers.WmsTileLayer(
-#     url="https://service.pdok.nl/wandelnet/regionale-wandelnetwerken/wms/v1_0",
-#     layers=["wandelknooppunten", "wandelnetwerken"],
-#     transparent=True,
-#     control=True,
-#     fmt="image/png",
-#     name="Regionale Wandelnetwerken WMS",
-#     overlay=True,
-#     show=True,
-#     version="1.3.0",
-# ).add_to(m)
 
-folium.LayerControl().add_to(m)
-folium_static(m)
-# st_folium(m)
+def create_map():
+    """Create a map with the outage data.
+    Use the previous state where possible to stop whole app reloading
+    when interacting with the map.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    folium.Map
+        A folium map with the asset and sag data.
+
+    """
+    if (
+        "map" not in st.session_state
+        or "current_data" not in st.session_state
+    ):
+        m = folium.Map(location=[52.4326, 5.4913], zoom_start=8)
+        folium.TileLayer("cartodbpositron", show=True).add_to(m)
+        folium.TileLayer("cartodbdark_matter", show=False).add_to(m)
+        layer_list = [
+            "nl:nl_meters",
+            "nl:nl_hs_cables",
+            "nl:nl_ms_cables",
+            "nl:nl_ls_cables",
+        ]
+
+        for layer in layer_list:
+            if layer == "nl:nl_hs_cables":
+                default_show_layer = True
+            else:
+                default_show_layer = False
+            folium.WmsTileLayer(
+                url=f"{host_root}:8080/geoserver/wms",
+                name=layer,
+                fmt="image/png",
+                layers=[layer],
+                transparent=True,
+                overlay=True,
+                control=True,
+                show=default_show_layer,
+            ).add_to(m)
+
+        Fullscreen().add_to(m)
+        folium.LayerControl().add_to(m)
+
+        st.session_state.map = m  # save the map in the session state
+        return st.session_state.map
+
+
+m = create_map()
+
+if screen_width:
+    map_screen_width = int(screen_width) - 200
+else:
+    map_screen_width = 800
+if screen_height:
+    map_screen_height = int(screen_height) - 200
+else:
+    map_screen_height = 600
+map_render = folium_static(
+    m, height=map_screen_height, width=map_screen_width
+)

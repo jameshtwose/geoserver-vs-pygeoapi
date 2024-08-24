@@ -1,3 +1,6 @@
 folium
 streamlit
 streamlit_folium
+pyproj
+geopandas
+streamlit_js_eval
