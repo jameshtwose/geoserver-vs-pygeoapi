@@ -2,3 +2,6 @@
 scratch*
 nl.csv
 *.gpkg
+pygeoapi-config.yaml
+openapi-config.yaml
+__pycache__

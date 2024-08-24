@@ -20,6 +20,8 @@ COPY . /usr/app
 
 WORKDIR /usr/app
 
+RUN pygeoapi 
+
 EXPOSE 5001
 
 CMD ["python3.10", "main.py"]

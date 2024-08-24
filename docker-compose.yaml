@@ -43,13 +43,13 @@ services:
   #   networks:
   #     - database
 
-  geoserver:
-    image: docker.osgeo.org/geoserver:2.25.2
-    container_name: geoserver
-    ports:
-      - "8080:8080"
-    networks:
-      - database
+  # geoserver:
+  #   image: docker.osgeo.org/geoserver:2.25.2
+  #   container_name: geoserver
+  #   ports:
+  #     - "8080:8080"
+  #   networks:
+  #     - database
 
   # pygeoapi:
   #   build: ./pygeoapi
@@ -59,13 +59,13 @@ services:
   #   networks:
   #     - database
   
-  frontend:
-    build: ./frontend
-    container_name: frontend
-    ports:
-      - "8081:8081"
-    networks:
-      - database
+  # frontend:
+  #   build: ./frontend
+  #   container_name: frontend
+  #   ports:
+  #     - "8081:8081"
+  #   networks:
+  #     - database
 
   # fastapi-sqlalchemy:
   #   container_name: fastapi-sqlalchemy
