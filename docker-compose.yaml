@@ -1,6 +1,7 @@
 services:
   database:
     image: postgis/postgis:16-3.4-alpine
+    pull_policy: if_not_present
     container_name: postgis
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d bonn"]
@@ -22,26 +23,18 @@ services:
   pgadmin:
     container_name: pgadmin_container
     image: dpage/pgadmin4
+    pull_policy: if_not_present
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:
        - pgadmin:/var/lib/pgadmin
-
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     networks:
       - database
     restart: unless-stopped
-
-  # geoserver:
-  #   container_name: geoserver
-  #   build: ./geoserver
-  #   ports:
-  #     - "8080:8080"
-  #   networks:
-  #     - database
 
   # geoserver:
   #   image: docker.osgeo.org/geoserver:2.25.2
@@ -51,11 +44,11 @@ services:
   #   networks:
   #     - database
 
-  # pygeoapi:
-  #   build: ./pygeoapi
-  #   container_name: pygeoapi
+  # geoapi:
+  #   build: ./geoapi
+  #   container_name: geoapi
   #   ports:
-  #     - "5001:5000"
+  #     - "8081:8081"
   #   networks:
   #     - database
   
@@ -63,25 +56,17 @@ services:
   #   build: ./frontend
   #   container_name: frontend
   #   ports:
-  #     - "8081:8081"
+  #     - "8082:8080"
   #   networks:
   #     - database
-
-  # fastapi-sqlalchemy:
-  #   container_name: fastapi-sqlalchemy
-  #   build: ./fastapi-sqlalchemy
-  #   ports:
-  #     - "8080:8080"
-  #   networks:
-  #     - postgres
 
 networks:
   database:
     driver: bridge
   geoserver:
     driver: bridge
-  # pygeoapi:
-  #   driver: bridge
+  geoapi:
+    driver: bridge
 
 volumes:
   database:

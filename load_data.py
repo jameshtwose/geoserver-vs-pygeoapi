@@ -26,6 +26,7 @@ import geopandas as gpd
 engine = create_engine(
     "postgresql+psycopg2://postgres:postgres@localhost:5434/postgres"
 )
+print("create extension")
 # create postgis extension
 with engine.begin() as conn:
     conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis"))
@@ -72,11 +73,13 @@ Base.metadata.create_all(engine)
 
 # %%
 points_df = pd.read_csv("nl.csv")
+print("Points dataframe")
+print(points_df.head())
 # %%
 with engine.begin() as conn:
     query = insert(NlMeters).values(points_df.to_dict(orient="records"))
     conn.execute(query)
-
+print("Points inserted")
 # %%
 layer_model_dict = {
     "hoogspanningskabels": NlHsCables,
@@ -95,7 +98,10 @@ for layer, model in layer_model_dict.items():
         )
         .drop(columns=["id", "geometry"])
     )
+    print(f"{layer} dataframe")
+    print(lines_gdf.head())
     with engine.begin() as conn:
         query = insert(model).values(lines_gdf.to_dict(orient="records"))
         conn.execute(query)
+    print(f"{layer} inserted")
 # %%

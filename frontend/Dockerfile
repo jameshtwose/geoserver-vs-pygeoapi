@@ -11,6 +11,6 @@ WORKDIR /usr/app
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-EXPOSE 8081
+EXPOSE 8080
 
-CMD ["streamlit", "run", "dashboard.py", "--server.port=8081", "--browser.gatherUsageStats=False"]
+CMD ["streamlit", "run", "dashboard.py", "--server.port=8080", "--browser.gatherUsageStats=False"]

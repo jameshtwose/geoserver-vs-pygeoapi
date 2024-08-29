@@ -13,6 +13,8 @@ Comparison of api vs tile server for rendering GIS data
 - `pg_restore -C -d postgres /home/nyc_data.backup -U postgres` to restore the database
 - `docker exec -it pgadmin_container sh` to access pgadmin
 - `streamlit run frontend/dashboard.py` to run the streamlit dashboard
+- `docker build -t geoapi .` to build the geoapi image
+- `docker run -p 8081:8080 geoapi` to run the geoapi container
 
 ## Pgadmin connection settings
 - host: docker.for.mac.host.internal
@@ -23,4 +25,4 @@ Comparison of api vs tile server for rendering GIS data
 - schema: public
 
 ## Cable data
-- https://service.pdok.nl/liander/elektriciteitsnetten/atom/liander_elektriciteitsnetten.xml
+- https://service.pdok.nl/liander/elektriciteitsnetten/atom/downloads/liander_elektriciteitsnetten.gpkg

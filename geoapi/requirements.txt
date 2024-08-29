@@ -1,0 +1,9 @@
+python-dotenv
+geoalchemy2
+psycopg2-binary
+sqlalchemy
+fastapi[standard]
+uvicorn
+pydantic
+geojson-pydantic
+shapely
