@@ -16,7 +16,7 @@ def get_cable_data(
     Parameters
     ----------
     data_type : str
-        The type of data to get (e.g., "nl_hs_cables").
+        The type of data to get (e.g., "hs_cables").
     limit : int
         The number of items to get.
 
@@ -26,13 +26,48 @@ def get_cable_data(
         The cable data.
 
     """
-    url = f"http://localhost:5001/collections/{data_type}/items?f=json&limit={limit}"
+    url = f"http://localhost:8090/{data_type}?limit={limit}"
     return requests.get(url)
 
 
 @st.cache_data(ttl=600)
-def load_hs_cables(limit: int = 100) -> pd.DataFrame:
+def load_cables(cable_type="hs_cables", limit: int = 100) -> pd.DataFrame:
     """Load the high-voltage cables data.
+
+    Parameters
+    ----------
+    cable_type: str
+        The type of cable to load.
+    limit : int
+        The number of items to get.
+
+    Returns
+    -------
+    pd.DataFrame
+        The cable data.
+
+    """
+    response = get_cable_data(data_type=cable_type, limit=limit)
+    data = response.json()
+    df = (
+        pd.json_normalize(data["features"])
+        .explode("geometry.coordinates")
+        .assign(
+            **{
+                "latitude": lambda x: x["geometry.coordinates"].apply(lambda y: y[1]),
+                "longitude": lambda x: x["geometry.coordinates"].apply(lambda y: y[0]),
+            }
+        )
+    ).rename(columns={"properties.id": "id"})
+    df["latitude"], df["longitude"] = transformer.transform(
+        df["longitude"], df["latitude"]
+    )
+    return df
+
+
+@st.cache_data(ttl=600)
+def load_meters(limit: int = 100) -> pd.DataFrame:
+    """Load the meters data.
 
     Parameters
     ----------
@@ -42,29 +77,28 @@ def load_hs_cables(limit: int = 100) -> pd.DataFrame:
     Returns
     -------
     pd.DataFrame
-        The high-voltage cables data.
+        The meters data.
 
     """
-    response = get_cable_data(data_type="nl_hs_cables", limit=limit)
+    response = get_cable_data(data_type="meters", limit=limit)
     data = response.json()
     df = (
         pd.json_normalize(data["features"])
-        .explode("geometry.coordinates")
         .assign(
             **{
-                "latitude": lambda x: x["geometry.coordinates"].apply(
-                    lambda y: y[1]
-                ),
-                "longitude": lambda x: x["geometry.coordinates"].apply(
-                    lambda y: y[0]
-                ),
+                "latitude": lambda x: x["geometry.coordinates"].apply(lambda y: y[1]),
+                "longitude": lambda x: x["geometry.coordinates"].apply(lambda y: y[0]),
+            }
+        )
+        .rename(
+            columns={
+                "properties.id": "id",
+                "properties.address": "address",
+                "properties.info": "info",
             }
         )
     )
     df["latitude"], df["longitude"] = transformer.transform(
-        df["latitude"], df["longitude"]
+        df["longitude"], df["latitude"]
     )
-    # df["geometry.coordinates"] = str(transformer.transform(
-    #     df["geometry.coordinates"].str[1], df["geometry.coordinates"].str[0]
-    # ))
     return df

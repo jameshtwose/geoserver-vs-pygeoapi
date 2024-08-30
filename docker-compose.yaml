@@ -4,14 +4,12 @@ services:
     pull_policy: if_not_present
     container_name: postgis
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d bonn"]
       interval: 10s
       timeout: 5s
       retries: 5
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: bonn
     networks:
       - database
     ports:
@@ -36,36 +34,18 @@ services:
       - database
     restart: unless-stopped
 
-  # geoserver:
-  #   image: docker.osgeo.org/geoserver:2.25.2
-  #   container_name: geoserver
-  #   ports:
-  #     - "8080:8080"
-  #   networks:
-  #     - database
-
-  # geoapi:
-  #   build: ./geoapi
-  #   container_name: geoapi
-  #   ports:
-  #     - "8081:8081"
-  #   networks:
-  #     - database
-  
-  # frontend:
-  #   build: ./frontend
-  #   container_name: frontend
-  #   ports:
-  #     - "8082:8080"
-  #   networks:
-  #     - database
+  geoserver:
+    image: docker.osgeo.org/geoserver:2.25.2
+    container_name: geoserver
+    ports:
+      - "8080:8080"
+    networks:
+      - database
 
 networks:
   database:
     driver: bridge
   geoserver:
-    driver: bridge
-  geoapi:
     driver: bridge
 
 volumes:

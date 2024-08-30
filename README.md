@@ -1,18 +1,15 @@
 # geoserver-vs-pygeoapi
 Comparison of api vs tile server for rendering GIS data
 
-## Useful commands
+## Useful commands (run on mac)
+- `brew install docker` to install docker
+- `brew install docker-compose` to install docker-compose
+- `brew install postgresql@16` to install postgresql
+- `brew install libpq` to install libpq
 - `docker-compose up -d` to start the services
-- to clear ports `lsof -i tcp:5432` and `kill -9 <PID>`
-- `docker cp nyc_data.backup postgis:/var/lib/postgresql/data/nyc_data.backup` to copy the backup file to postgres container
-- `docker cp nyc_data.backup pgadmin_container:/home/nyc_data.backup` to copy the backup file to pgadmin container
-- `docker cp nyc_data.backup postgis:/home/nyc_data.backup`
-- `docker exec -it postgis psql -U postgres` to access postgis
-- `CREATE EXTENSION postgis;` to enable postgis extension
-- `pg_restore -C -d postgres /var/lib/postgresql/data/nyc_data.backup;` to restore the database
-- `pg_restore -C -d postgres /home/nyc_data.backup -U postgres` to restore the database
-- `docker exec -it pgadmin_container sh` to access pgadmin
+- to clear ports `lsof -i tcp:5432` and `kill -9 <PID>` to kill the process (Optional)
 - `streamlit run frontend/dashboard.py` to run the streamlit dashboard
+- `python geoapi/main.py` to run the pygeoapi server
 - `docker build -t geoapi .` to build the geoapi image
 - `docker run -p 8081:8080 geoapi` to run the geoapi container
 

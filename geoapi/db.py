@@ -3,8 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from geoalchemy2 import Geometry
 
 host = "localhost"
-host = "docker.for.mac.localhost"
-host = "docker.for.mac.host.internal"
+# host = "docker.for.mac.localhost"
+# host = "docker.for.mac.host.internal"
 
 engine = create_engine(
     f"postgresql+psycopg2://postgres:postgres@{host}:5434/postgres"

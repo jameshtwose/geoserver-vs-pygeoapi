@@ -23,8 +23,11 @@ import geopandas as gpd
 
 # %%
 # postgresql+psycopg2://user:password@host:port/dbname
+# host = "docker.for.mac.host.internal"
+# psql -h localhost -p 5434 -U postgres -d postgres
+host = "localhost"
 engine = create_engine(
-    "postgresql+psycopg2://postgres:postgres@localhost:5434/postgres"
+    f"postgresql+psycopg2://postgres:postgres@{host}:5434/postgres"
 )
 print("create extension")
 # create postgis extension
