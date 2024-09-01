@@ -49,11 +49,11 @@ def create_geoserver_map():
         ]
 
         for layer in layer_list:
-            # if layer == "nl:nl_hs_cables":
-            #     default_show_layer = True
-            # else:
-            #     default_show_layer = False
-            default_show_layer = True
+            if layer == "nl:nl_hs_cables":
+                default_show_layer = True
+            else:
+                default_show_layer = False
+            # default_show_layer = True
             folium.WmsTileLayer(
                 url=f"{host_root}:8080/geoserver/wms",
                 name=layer,
